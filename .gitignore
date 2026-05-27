@@ -1,0 +1,48 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+artifacts/
+*.binlog
+*.log
+
+# NuGet
+*.nupkg
+*.snupkg
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Test results and coverage
+[Tt]est[Rr]esult*/
+*.trx
+coverage*.json
+coverage*.xml
+coverage*.info
+*.coverage
+*.coveragexml
+
+# Editor temp files
+*.swp
+*.swo
+*~
+~$*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment
+.env
+.env.*
+
+# Excluded from initial push
+samples/
+tests/
+TODO.md
+
+# PhosphorIcons.Generator transient swap directories
+assets/phosphor/*.staging/
+assets/phosphor/*.old/

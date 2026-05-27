@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PhosphorIcons.Application/PhosphorIcons.Application.csproj" />
+    <Project Path="src/PhosphorIcons.Presentation.Blazor/PhosphorIcons.Presentation.Blazor.csproj" />
+    <Project Path="src/PhosphorIcons.Domain/PhosphorIcons.Domain.csproj" />
+    <Project Path="src/PhosphorIcons.Infrastructure/PhosphorIcons.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/PhosphorIcons.Generator/PhosphorIcons.Generator.csproj" />
+  </Folder>
+</Solution>

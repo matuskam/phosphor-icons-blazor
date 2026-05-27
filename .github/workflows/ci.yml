@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_NOLOGO: 1
+  CONFIGURATION: Release
+
+# GitHub Actions sets CI=true automatically, which trips the
+# <ContinuousIntegrationBuild> property in src/PhosphorIcons.Presentation.Blazor.csproj.
+# That gives us deterministic builds + valid SourceLink metadata in the
+# published .nupkg without any extra config here.
+
+jobs:
+  build-test-pack:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # SourceLink embeds the commit SHA + repo URL; it needs the full
+          # history (or at least the tip commit's metadata) to do so.
+          fetch-depth: 0
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore PhosphorIcons.Blazor.slnx
+
+      - name: Build
+        run: dotnet build PhosphorIcons.Blazor.slnx --configuration ${{ env.CONFIGURATION }} --no-restore
+
+      - name: Pack
+        # Don't pass --no-build: pack's CopyProjectReferencesToPackage target depends on
+        # ResolveReferences for the inner projects, which trips NETSDK1085 under --no-build.
+        # Letting pack drive its own incremental build adds only a few seconds and avoids
+        # the failure mode entirely.
+        run: >
+          dotnet pack src/PhosphorIcons.Presentation.Blazor/PhosphorIcons.Presentation.Blazor.csproj
+          --configuration ${{ env.CONFIGURATION }}
+          --output ./artifacts
+
+      - name: Upload nupkg artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: PhosphorIcons.Blazor-nupkg
+          path: ./artifacts/*nupkg
+          if-no-files-found: error
+          retention-days: 30
+
+      # ----------------------------------------------------------------------
+      # Publish to nuget.org on tag push (git tag v0.1.0 && git push --tags).
+      # Requires a NUGET_API_KEY secret on the repo. Commented out until the
+      # secret is in place. Uncomment for the first published release.
+      # ----------------------------------------------------------------------
+      # - name: Publish to NuGet
+      #   if: startsWith(github.ref, 'refs/tags/v')
+      #   run: >
+      #     dotnet nuget push ./artifacts/*.nupkg
+      #     --api-key ${{ secrets.NUGET_API_KEY }}
+      #     --source https://api.nuget.org/v3/index.json
+      #     --skip-duplicate

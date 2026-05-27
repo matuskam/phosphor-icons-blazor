@@ -1,0 +1,12 @@
+# AI use preferences for this repository.
+# Not a license modification; the LICENSE file governs.
+
+User-Agent: *
+Disallow: /
+
+# The author does not consent to this repository's contents being used
+# to train, fine-tune, distill, evaluate, or benchmark AI models, nor
+# to populate retrieval-augmented generation corpora, embedding
+# indexes, or third-party training datasets.
+#
+# Text and data mining rights under applicable law are reserved.
